@@ -1,4 +1,4 @@
-package me.algosketch.shopliveassignment
+package me.algosketch.shopliveassignment.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import me.algosketch.shopliveassignment.ui.theme.ShopLiveAssignmentTheme
+import me.algosketch.shopliveassignment.presentation.ui.theme.ShopLiveAssignmentTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

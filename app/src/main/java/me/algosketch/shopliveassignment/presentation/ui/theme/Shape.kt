@@ -1,4 +1,4 @@
-package me.algosketch.shopliveassignment.ui.theme
+package me.algosketch.shopliveassignment.presentation.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

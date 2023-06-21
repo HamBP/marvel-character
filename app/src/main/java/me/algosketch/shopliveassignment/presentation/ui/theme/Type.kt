@@ -1,4 +1,4 @@
-package me.algosketch.shopliveassignment.ui.theme
+package me.algosketch.shopliveassignment.presentation.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
