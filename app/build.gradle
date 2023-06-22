@@ -5,6 +5,9 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'me.algosketch.shopliveassignment'
     compileSdk 33
@@ -20,6 +23,9 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        buildConfigField "String", "PUBLIC_KEY", properties['publicKey']
+        buildConfigField "String", "PRIVATE_KEY", properties['privateKey']
     }
 
     buildTypes {
