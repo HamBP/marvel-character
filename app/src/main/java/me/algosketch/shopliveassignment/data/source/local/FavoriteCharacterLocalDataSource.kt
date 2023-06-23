@@ -10,6 +10,7 @@ class FavoriteCharacterLocalDataSource @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) {
     private var cachedData: List<FavoriteCharacter>? = null
+    private var dirty: Boolean = false
 
     suspend fun findAll(order: String): List<FavoriteCharacter> = withContext(ioDispatcher) {
         requireCachedDate()
@@ -25,19 +26,23 @@ class FavoriteCharacterLocalDataSource @Inject constructor(
         if(cachedData!!.size >= 5) deleteOldest()
 
         dao.insert(character)
+        dirty = true
     }
 
     suspend fun deleteByCharacterId(id: Int) = withContext(ioDispatcher) {
         dao.deleteByCharacterId(id)
+        dirty = true
     }
 
     private fun deleteOldest() {
         val target = cachedData!!.minBy { it.id }
         dao.delete(target)
+        dirty = true
     }
 
     private fun requireCachedDate() {
-        if(cachedData == null) cachedData
-        cachedData = dao.getAll()
+        if(cachedData == null || dirty) cachedData = dao.getAll()
+
+        dirty = false
     }
 }
