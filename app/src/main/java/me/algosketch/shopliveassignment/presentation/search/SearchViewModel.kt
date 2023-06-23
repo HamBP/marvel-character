@@ -29,9 +29,9 @@ class SearchViewModel @Inject constructor(
 
     fun search() {
         viewModelScope.launch {
-            _state.value = SearchUiState.Loading
-
             if(keyword.value.length < 2) return@launch
+
+            _state.value = SearchUiState.Loading
 
             val res = searchRepository.getMarvelCharacters(keyword.value)
 

@@ -6,6 +6,7 @@ data class CharacterEntity(
     val name: String,
     val description: String,
     val thumbnailUrl: String,
+    val favorite: Boolean = false,
 )
 
 fun Character.toEntity(): CharacterEntity {
