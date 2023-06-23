@@ -56,7 +56,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun search() {
-        searchJob?.cancel()
+        cancelPreviousSearch()
 
         if(keyword.value.length < 2) return
 
@@ -76,6 +76,11 @@ class SearchViewModel @Inject constructor(
                 else -> SearchUiState.Success(emptyList())
             }
         }
+    }
+
+    private fun cancelPreviousSearch() {
+        searchJob?.cancel()
+        _state.value = SearchUiState.Success()
     }
 
     fun bookmark(character: CharacterEntity) {
