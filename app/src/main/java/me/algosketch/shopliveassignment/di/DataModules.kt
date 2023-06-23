@@ -9,7 +9,7 @@ import me.algosketch.shopliveassignment.data.source.remote.RetrofitFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataSourceModule {
+object NetworkModule {
 
     @Provides
     fun provideMarvelCharacterService() : MarvelCharacterService {
