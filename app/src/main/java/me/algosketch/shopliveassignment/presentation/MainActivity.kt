@@ -3,6 +3,7 @@ package me.algosketch.shopliveassignment.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -69,21 +70,26 @@ fun SlBottomNav(
     onTabSelected: (BottomNavDestination) -> Unit,
     currentScreen: BottomNavDestination,
 ) {
-    Row {
-        allScreens.forEach { screen ->
-            val selected = currentScreen == screen
+    Surface(
+        elevation = 8.dp,
+        modifier = Modifier.background(color = Color.White)
+    ) {
+        Row {
+            allScreens.forEach { screen ->
+                val selected = currentScreen == screen
 
-            Box(
-                modifier = Modifier
-                .weight(1f, true)
-                .height(48.dp)
-                .clickable { onTabSelected(screen) },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    screen.route,
-                    color = if(selected) Color.Blue else Color.Black
-                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f, true)
+                        .height(48.dp)
+                        .clickable { onTabSelected(screen) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        screen.route,
+                        color = if (selected) Color.Blue else Color.Black
+                    )
+                }
             }
         }
     }
