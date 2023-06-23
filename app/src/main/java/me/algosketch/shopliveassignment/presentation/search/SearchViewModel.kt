@@ -4,10 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import me.algosketch.shopliveassignment.data.repository.FavoriteCharacterRepository
@@ -32,7 +30,7 @@ class SearchViewModel @Inject constructor(
     val keyword = _keyword.asStateFlow()
     private val _state = MutableStateFlow<SearchUiState>(SearchUiState.Success())
     val state = _state.asStateFlow()
-    private var favorites: List<CharacterEntity> = emptyList()
+    private var favorites: List<Int> = emptyList()
     private var searchJob: Job? = null
 
     private val searchEventFlow = keyword.debounce(300L)
@@ -44,7 +42,8 @@ class SearchViewModel @Inject constructor(
 
     private fun fetchFavoriteCharacters() {
         viewModelScope.launch {
-            favorites = favoriteCharacterRepository.getFavoriteCharacters().map { it.toEntity() }
+            favorites = favoriteCharacterRepository.getFavoriteCharacters().map { it.characterId }
+            updateFavorite()
         }
     }
 
@@ -69,7 +68,7 @@ class SearchViewModel @Inject constructor(
             _state.value = when(res) {
                 is ApiResponse.Success -> {
                     val list = res.data?.data!!.results.map { character ->
-                        character.toEntity(favorite = favorites.map { it.id }.contains(character.id))
+                        character.toEntity(favorite = favorites.contains(character.id))
                     }
                     SearchUiState.Success(list)
                 }
@@ -89,5 +88,19 @@ class SearchViewModel @Inject constructor(
 
     fun updateKeyword(newKeyword: String) {
         _keyword.value = newKeyword
+    }
+
+    private fun updateFavorite() {
+        if(state.value !is SearchUiState.Success) return
+
+        _state.value = SearchUiState.Success(
+            characters = (state.value as SearchUiState.Success).characters.map {
+                val originFavorite = it.favorite
+                val curFavorite = favorites.contains(it.id)
+
+                if(originFavorite == curFavorite) it
+                else it.copy(favorite = curFavorite)
+            }
+        )
     }
 }
