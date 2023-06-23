@@ -1,13 +1,13 @@
 package me.algosketch.shopliveassignment.data.source.local
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.algosketch.shopliveassignment.di.IoDispatcher
 import javax.inject.Inject
 
 class FavoriteCharacterLocalDataSource @Inject constructor(
     private val dao: FavoriteCharacterDao,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) {
     private var cachedData: List<FavoriteCharacter>? = null
 
