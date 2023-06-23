@@ -31,3 +31,12 @@ fun Character.toEntity(): CharacterEntity {
         thumbnailUrl = "https${prefixUrl}/$imageSize.${thumbnail.extension}",
     )
 }
+
+fun FavoriteCharacter.toEntity(): CharacterEntity {
+    return CharacterEntity(
+        id = characterId,
+        name = name,
+        description = description,
+        thumbnailUrl = thumbnailUrl,
+    )
+}
