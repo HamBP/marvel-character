@@ -28,6 +28,17 @@ class SearchViewModel @Inject constructor(
     val keyword = _keyword.asStateFlow()
     private val _state = MutableStateFlow<SearchUiState>(SearchUiState.Success())
     val state = _state.asStateFlow()
+    private var favorites: List<CharacterEntity> = emptyList()
+
+    init {
+        fetchFavoriteCharacters()
+    }
+
+    private fun fetchFavoriteCharacters() {
+        viewModelScope.launch {
+            favorites = favoriteCharacterRepository.getFavoriteCharacters().map { it.toEntity() }
+        }
+    }
 
     fun search() {
         viewModelScope.launch {
@@ -39,7 +50,9 @@ class SearchViewModel @Inject constructor(
 
             _state.value = when(res) {
                 is ApiResponse.Success -> {
-                    val list = res.data?.data!!.results.map { it.toEntity() }
+                    val list = res.data?.data!!.results.map { character ->
+                        character.toEntity(favorite = favorites.map { it.id }.contains(character.id))
+                    }
                     SearchUiState.Success(list)
                 }
                 is ApiResponse.Error -> SearchUiState.Error(res.message)
@@ -51,6 +64,7 @@ class SearchViewModel @Inject constructor(
     fun bookmark(character: CharacterEntity) {
         viewModelScope.launch {
             favoriteCharacterRepository.insert(character.toFavoriteCharacter())
+            fetchFavoriteCharacters()
         }
     }
 

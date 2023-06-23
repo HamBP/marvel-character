@@ -20,7 +20,9 @@ data class CharacterEntity(
     }
 }
 
-fun Character.toEntity(): CharacterEntity {
+fun Character.toEntity(
+    favorite: Boolean,
+): CharacterEntity {
     val imageSize = "standard_xlarge"
     val prefixUrl = thumbnail.path.substring(4)
 
@@ -29,6 +31,7 @@ fun Character.toEntity(): CharacterEntity {
         name = name,
         description = description,
         thumbnailUrl = "https${prefixUrl}/$imageSize.${thumbnail.extension}",
+        favorite = favorite,
     )
 }
 
@@ -38,5 +41,6 @@ fun FavoriteCharacter.toEntity(): CharacterEntity {
         name = name,
         description = description,
         thumbnailUrl = thumbnailUrl,
+        favorite = true,
     )
 }
