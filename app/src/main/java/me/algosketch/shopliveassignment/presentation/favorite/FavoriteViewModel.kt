@@ -50,6 +50,7 @@ class FavoriteViewModel @Inject constructor(
     fun unbookmark(characterEntity: CharacterEntity) {
         viewModelScope.launch {
             favoriteCharacterRepository.delete(characterEntity.id)
+            fetchFavoriteCharacters()
         }
     }
 }
