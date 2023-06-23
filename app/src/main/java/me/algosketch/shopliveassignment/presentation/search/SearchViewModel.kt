@@ -3,6 +3,8 @@ package me.algosketch.shopliveassignment.presentation.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -31,6 +33,7 @@ class SearchViewModel @Inject constructor(
     private val _state = MutableStateFlow<SearchUiState>(SearchUiState.Success())
     val state = _state.asStateFlow()
     private var favorites: List<CharacterEntity> = emptyList()
+    private var searchJob: Job? = null
 
     private val searchEventFlow = keyword.debounce(300L)
 
@@ -54,9 +57,11 @@ class SearchViewModel @Inject constructor(
     }
 
     fun search() {
-        viewModelScope.launch {
-            if(keyword.value.length < 2) return@launch
+        searchJob?.cancel()
 
+        if(keyword.value.length < 2) return
+
+        searchJob = viewModelScope.launch {
             _state.value = SearchUiState.Loading
 
             val res = searchRepository.getMarvelCharacters(keyword.value)
