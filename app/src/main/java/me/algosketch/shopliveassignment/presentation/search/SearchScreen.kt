@@ -1,22 +1,19 @@
 package me.algosketch.shopliveassignment.presentation.search
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
+import me.algosketch.shopliveassignment.presentation.components.CharacterCards
+import me.algosketch.shopliveassignment.presentation.components.LoadingProgress
 
 @Composable
 fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
@@ -29,18 +26,15 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
 
     Column {
 
-        OutlinedTextField(
-            value = keyword.value,
+        OutlinedTextField(value = keyword.value,
             onValueChange = { viewModel.updateKeyword(it) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("마블 영웅 이름을 입력하시오.") },
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search"
+                    imageVector = Icons.Default.Search, contentDescription = "Search"
                 )
-            }
-        )
+            })
 
         when (uiState.value) {
             is SearchUiState.Loading -> LoadingProgress()
@@ -52,54 +46,6 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
                 Text("Error")
             }
             else -> CharacterCards(emptyList()) {}
-        }
-    }
-}
-
-@Composable
-fun LoadingProgress() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-fun CharacterCards(characters: List<CharacterEntity>, bookmark: (CharacterEntity) -> Unit) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 160.dp),
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
-        modifier = Modifier.padding(horizontal = 16.dp),
-        contentPadding = PaddingValues(vertical = 32.dp),
-    ) {
-        items(characters.size) {
-            CharacterCard(character = characters[it], bookmark)
-        }
-    }
-}
-
-@Composable
-fun CharacterCard(character: CharacterEntity, onClick: (CharacterEntity) -> Unit) {
-    Card(
-        modifier = Modifier
-            .padding(bottom = 24.dp)
-            .clickable { onClick(character) }
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Image(
-                painter = rememberAsyncImagePainter(character.thumbnailUrl),
-                contentDescription = character.name,
-                modifier = Modifier.size(120.dp)
-            )
-            Text(character.name)
-            Text(character.description, overflow = TextOverflow.Ellipsis, maxLines = 3)
         }
     }
 }
