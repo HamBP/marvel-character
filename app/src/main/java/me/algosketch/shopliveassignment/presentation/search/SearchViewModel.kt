@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import me.algosketch.shopliveassignment.data.repository.FavoriteCharacterRepository
 import me.algosketch.shopliveassignment.data.repository.MarvelCharacterRepository
 import me.algosketch.shopliveassignment.data.source.ApiResponse
 import javax.inject.Inject
@@ -20,7 +21,8 @@ sealed class SearchUiState {
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchRepository: MarvelCharacterRepository
+    private val searchRepository: MarvelCharacterRepository,
+    private val favoriteCharacterRepository: FavoriteCharacterRepository,
 ) : ViewModel() {
     private val _keyword = MutableStateFlow("")
     val keyword = _keyword.asStateFlow()
@@ -43,6 +45,12 @@ class SearchViewModel @Inject constructor(
                 is ApiResponse.Error -> SearchUiState.Error(res.message)
                 else -> SearchUiState.Success(emptyList())
             }
+        }
+    }
+
+    fun bookmark(character: CharacterEntity) {
+        viewModelScope.launch {
+            favoriteCharacterRepository.insert(character.toFavoriteCharacter())
         }
     }
 

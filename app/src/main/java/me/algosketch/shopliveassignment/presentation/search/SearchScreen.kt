@@ -1,10 +1,10 @@
 package me.algosketch.shopliveassignment.presentation.search
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -34,16 +34,24 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
             onValueChange = { viewModel.updateKeyword(it) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("마블 영웅 이름을 입력하시오.") },
-            leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = "Search") }
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search"
+                )
+            }
         )
 
         when (uiState.value) {
             is SearchUiState.Loading -> LoadingProgress()
-            is SearchUiState.Success -> CharacterCards(characters = (uiState.value as SearchUiState.Success).characters)
+            is SearchUiState.Success -> CharacterCards(
+                bookmark = { character -> viewModel.bookmark(character) },
+                characters = (uiState.value as SearchUiState.Success).characters
+            )
             is SearchUiState.Error -> {
                 Text("Error")
             }
-            else -> CharacterCards(emptyList())
+            else -> CharacterCards(emptyList()) {}
         }
     }
 }
@@ -61,7 +69,7 @@ fun LoadingProgress() {
 }
 
 @Composable
-fun CharacterCards(characters: List<CharacterEntity>) {
+fun CharacterCards(characters: List<CharacterEntity>, bookmark: (CharacterEntity) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 160.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -69,15 +77,17 @@ fun CharacterCards(characters: List<CharacterEntity>) {
         contentPadding = PaddingValues(vertical = 32.dp),
     ) {
         items(characters.size) {
-            CharacterCard(character = characters[it])
+            CharacterCard(character = characters[it], bookmark)
         }
     }
 }
 
 @Composable
-fun CharacterCard(character: CharacterEntity) {
+fun CharacterCard(character: CharacterEntity, onClick: (CharacterEntity) -> Unit) {
     Card(
-        modifier = Modifier.padding(bottom = 24.dp)
+        modifier = Modifier
+            .padding(bottom = 24.dp)
+            .clickable { onClick(character) }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
