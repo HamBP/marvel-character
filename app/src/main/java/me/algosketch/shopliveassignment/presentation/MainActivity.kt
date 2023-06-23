@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
+import me.algosketch.shopliveassignment.presentation.search.SearchScreen
 import me.algosketch.shopliveassignment.presentation.ui.theme.ShopLiveAssignmentTheme
 
 @AndroidEntryPoint
@@ -24,22 +25,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    SearchScreen()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ShopLiveAssignmentTheme {
-        Greeting("Android")
     }
 }
