@@ -11,10 +11,12 @@ class FavoriteCharacterLocalDataSource @Inject constructor(
 ) {
     private var cachedData: List<FavoriteCharacter>? = null
 
-    suspend fun findAll(): List<FavoriteCharacter> = withContext(ioDispatcher) {
+    suspend fun findAll(order: String): List<FavoriteCharacter> = withContext(ioDispatcher) {
         requireCachedDate()
 
-        cachedData!!
+        cachedData!!.sortedBy {
+            if(order.uppercase() == "ASC") it.id else -it.id
+        }
     }
 
     suspend fun insert(character: FavoriteCharacter) = withContext(ioDispatcher) {

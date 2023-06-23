@@ -9,8 +9,13 @@ import javax.inject.Singleton
 class FavoriteCharacterRepository @Inject constructor(
     private val favoriteDataSource: FavoriteCharacterLocalDataSource
 ) {
-    suspend fun getFavoriteCharacters(): List<FavoriteCharacter> =
-        favoriteDataSource.findAll()
+    /**
+     * @param order 정렬 기준 DESC, ASC
+     */
+    suspend fun getFavoriteCharacters(
+        order: String = "DESC",
+    ): List<FavoriteCharacter> =
+        favoriteDataSource.findAll(order)
 
     suspend fun insert(character: FavoriteCharacter) {
         favoriteDataSource.insert(character)
