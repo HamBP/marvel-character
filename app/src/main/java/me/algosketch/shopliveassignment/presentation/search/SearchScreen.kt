@@ -20,10 +20,6 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
     val keyword = viewModel.keyword.collectAsState()
     val uiState = viewModel.state.collectAsState()
 
-    LaunchedEffect(key1 = keyword.value) {
-        viewModel.search()
-    }
-
     Column {
 
         OutlinedTextField(value = keyword.value,

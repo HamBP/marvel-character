@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import me.algosketch.shopliveassignment.data.repository.FavoriteCharacterRepository
 import me.algosketch.shopliveassignment.data.repository.MarvelCharacterRepository
@@ -30,13 +32,24 @@ class SearchViewModel @Inject constructor(
     val state = _state.asStateFlow()
     private var favorites: List<CharacterEntity> = emptyList()
 
+    private val searchEventFlow = keyword.debounce(300L)
+
     init {
         fetchFavoriteCharacters()
+        collectEvents()
     }
 
     private fun fetchFavoriteCharacters() {
         viewModelScope.launch {
             favorites = favoriteCharacterRepository.getFavoriteCharacters().map { it.toEntity() }
+        }
+    }
+
+    private fun collectEvents() {
+        viewModelScope.launch {
+            searchEventFlow.collect {
+                search()
+            }
         }
     }
 
