@@ -18,10 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import me.algosketch.shopliveassignment.presentation.navigation.BottomNavDestination
-import me.algosketch.shopliveassignment.presentation.navigation.Search
-import me.algosketch.shopliveassignment.presentation.navigation.SlNavHost
-import me.algosketch.shopliveassignment.presentation.navigation.bottomNavScreens
+import me.algosketch.shopliveassignment.presentation.navigation.*
 import me.algosketch.shopliveassignment.presentation.ui.theme.ShopLiveAssignmentTheme
 
 @AndroidEntryPoint
@@ -52,7 +49,7 @@ fun SlApp() {
             bottomBar = { SlBottomNav(
                 allScreens = bottomNavScreens,
                 onTabSelected = { destination ->
-                    navController.navigate(destination.route)
+                    navController.navigateSingleTopTo(destination.route)
                 },
                 currentScreen = currentScreen
             ) }
