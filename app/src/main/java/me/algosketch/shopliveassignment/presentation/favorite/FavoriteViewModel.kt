@@ -7,9 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.algosketch.shopliveassignment.data.repository.FavoriteCharacterRepository
-import me.algosketch.shopliveassignment.presentation.navigation.Favorite
-import me.algosketch.shopliveassignment.presentation.search.CharacterEntity
-import me.algosketch.shopliveassignment.presentation.search.toEntity
+import me.algosketch.shopliveassignment.presentation.components.CharacterEntity
+import me.algosketch.shopliveassignment.presentation.components.toEntity
 import javax.inject.Inject
 
 sealed class FavoriteUiState {

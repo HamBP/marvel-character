@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import me.algosketch.shopliveassignment.presentation.search.CharacterEntity
 
 @Composable
 fun CharacterCards(characters: List<CharacterEntity>, bookmark: (CharacterEntity) -> Unit) {

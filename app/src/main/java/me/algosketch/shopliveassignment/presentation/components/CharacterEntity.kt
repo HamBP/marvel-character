@@ -1,4 +1,4 @@
-package me.algosketch.shopliveassignment.presentation.search
+package me.algosketch.shopliveassignment.presentation.components
 
 import me.algosketch.shopliveassignment.data.source.local.FavoriteCharacter
 import me.algosketch.shopliveassignment.data.source.remote.Character

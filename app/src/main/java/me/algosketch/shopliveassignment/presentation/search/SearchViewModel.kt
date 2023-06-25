@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import me.algosketch.shopliveassignment.data.repository.FavoriteCharacterRepository
 import me.algosketch.shopliveassignment.data.repository.MarvelCharacterRepository
 import me.algosketch.shopliveassignment.data.source.ApiResponse
+import me.algosketch.shopliveassignment.presentation.components.CharacterEntity
+import me.algosketch.shopliveassignment.presentation.components.toEntity
 import javax.inject.Inject
 
 sealed class SearchUiState {
