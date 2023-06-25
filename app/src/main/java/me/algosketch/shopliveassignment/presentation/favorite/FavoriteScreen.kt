@@ -33,7 +33,7 @@ fun FavoriteScreen(viewModel: FavoriteViewModel = hiltViewModel()) {
         is FavoriteUiState.Error -> {
             Text("Error")
         }
-        else -> CharacterCards(emptyList()) {}
+        else -> CharacterCards(emptyList(), bookmark = {})
     }
 }
 

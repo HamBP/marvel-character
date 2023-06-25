@@ -41,7 +41,7 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
             is SearchUiState.Error -> {
                 Text("Error")
             }
-            else -> CharacterCards(emptyList()) {}
+            else -> CharacterCards(emptyList(), bookmark = {})
         }
     }
 }
