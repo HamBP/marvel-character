@@ -9,14 +9,10 @@ import javax.inject.Singleton
 class MarvelCharacterRemoteDataSource @Inject constructor(
     private val service: MarvelCharacterService
 ) {
-    private val size = 10
-    private var page = 1
-    private val offset: Int
-        get() = size * (page - 1)
+    suspend fun load(keyword: String, size: Int, page: Int) : ApiResponse<CharacterDataWrapper> {
+        val offset = size * (page - 1)
 
-    // todo : page 증가
-    suspend fun load(keyword: String) : ApiResponse<CharacterDataWrapper> {
-        val res = service.getCharacters(keyword, size = 10, offset = offset)
+        val res = service.getCharacters(keyword, size = size, offset = offset)
 
         return try {
             ApiResponse.Success(

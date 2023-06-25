@@ -10,7 +10,21 @@ import javax.inject.Singleton
 class MarvelCharacterRepository @Inject constructor(
     private val source: MarvelCharacterRemoteDataSource
 ) {
+    private val size: Int = 10
+    private var page: Int = 1
+    private var query: String = ""
+        set(value) {
+            if(query == value) return
+
+            field = value
+            page = 1
+        }
+
     suspend fun getMarvelCharacters(keyword: String): ApiResponse<CharacterDataWrapper> {
-        return source.load(keyword)
+        query = keyword
+        val res = source.load(query, size, page)
+        page++
+
+        return res
     }
 }

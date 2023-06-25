@@ -36,7 +36,8 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
             is SearchUiState.Loading -> LoadingProgress()
             is SearchUiState.Success -> CharacterCards(
                 bookmark = { character -> viewModel.bookmark(character) },
-                characters = (uiState.value as SearchUiState.Success).characters
+                characters = (uiState.value as SearchUiState.Success).characters,
+                onBottomReached = { viewModel.search() },
             )
             is SearchUiState.Error -> {
                 Text("Error")
