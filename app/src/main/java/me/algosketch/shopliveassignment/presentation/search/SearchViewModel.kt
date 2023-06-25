@@ -17,9 +17,7 @@ import javax.inject.Inject
 
 sealed class SearchUiState {
     object Loading : SearchUiState()
-    data class Success(
-        val characters: List<CharacterEntity> = emptyList(),
-    ) : SearchUiState()
+    object Success : SearchUiState()
     data class Error(val message: String) : SearchUiState()
 }
 
@@ -30,10 +28,11 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
     private val _keyword = MutableStateFlow("")
     val keyword = _keyword.asStateFlow()
-    private val _state = MutableStateFlow<SearchUiState>(SearchUiState.Success())
+    private val _state = MutableStateFlow<SearchUiState>(SearchUiState.Success)
     val state = _state.asStateFlow()
     private var favorites: List<Int> = emptyList()
     private var searchJob: Job? = null
+    var characters: List<CharacterEntity> = emptyList()
 
     private val searchEventFlow = keyword.debounce(300L)
 
@@ -52,6 +51,7 @@ class SearchViewModel @Inject constructor(
     private fun collectEvents() {
         viewModelScope.launch {
             searchEventFlow.collect {
+                characters = emptyList()
                 search()
             }
         }
@@ -69,20 +69,20 @@ class SearchViewModel @Inject constructor(
 
             _state.value = when(res) {
                 is ApiResponse.Success -> {
-                    val list = res.data?.data!!.results.map { character ->
+                    characters = characters + res.data?.data!!.results.map { character ->
                         character.toEntity(favorite = favorites.contains(character.id))
                     }
-                    SearchUiState.Success(list)
+                    SearchUiState.Success
                 }
                 is ApiResponse.Error -> SearchUiState.Error(res.message)
-                else -> SearchUiState.Success(emptyList())
+                else -> SearchUiState.Success
             }
         }
     }
 
     private fun cancelPreviousSearch() {
         searchJob?.cancel()
-        _state.value = SearchUiState.Success()
+        _state.value = SearchUiState.Success
     }
 
     fun bookmark(character: CharacterEntity) {
@@ -100,14 +100,13 @@ class SearchViewModel @Inject constructor(
     private fun updateFavorite() {
         if(state.value !is SearchUiState.Success) return
 
-        _state.value = SearchUiState.Success(
-            characters = (state.value as SearchUiState.Success).characters.map {
-                val originFavorite = it.favorite
-                val curFavorite = favorites.contains(it.id)
+        _state.value = SearchUiState.Success
+        characters = characters.map {
+            val originFavorite = it.favorite
+            val curFavorite = favorites.contains(it.id)
 
-                if(originFavorite == curFavorite) it
-                else it.copy(favorite = curFavorite)
-            }
-        )
+            if (originFavorite == curFavorite) it
+            else it.copy(favorite = curFavorite)
+        }
     }
 }
