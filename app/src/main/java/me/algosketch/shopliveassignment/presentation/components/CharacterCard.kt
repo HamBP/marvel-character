@@ -6,14 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +18,12 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
-fun CharacterCards(characters: List<CharacterEntity>, bookmark: (CharacterEntity) -> Unit, onBottomReached: () -> Unit = {}) {
+fun CharacterCards(
+    characters: List<CharacterEntity>,
+    bookmark: (CharacterEntity) -> Unit,
+    onBottomReached: () -> Unit = {},
+    isLoading: Boolean = false,
+) {
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 160.dp),
@@ -34,8 +35,13 @@ fun CharacterCards(characters: List<CharacterEntity>, bookmark: (CharacterEntity
             CharacterCard(character = characters[it], bookmark)
         }
         item {
-            LaunchedEffect(key1 = true) {
+            LaunchedEffect(key1 = Unit) {
                 onBottomReached()
+            }
+        }
+        if(isLoading) {
+            item {
+                LoadingProgress()
             }
         }
     }
