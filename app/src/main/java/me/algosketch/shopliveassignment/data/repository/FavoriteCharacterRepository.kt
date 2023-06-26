@@ -1,6 +1,6 @@
 package me.algosketch.shopliveassignment.data.repository
 
-import me.algosketch.shopliveassignment.data.source.local.FavoriteCharacter
+import me.algosketch.shopliveassignment.data.source.local.CharacterEntity
 import me.algosketch.shopliveassignment.data.source.local.FavoriteCharacterLocalDataSource
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,10 +14,10 @@ class FavoriteCharacterRepository @Inject constructor(
      */
     suspend fun getFavoriteCharacters(
         order: String = "DESC",
-    ): List<FavoriteCharacter> =
+    ): List<CharacterEntity> =
         favoriteDataSource.findAll(order)
 
-    suspend fun insert(character: FavoriteCharacter) {
+    suspend fun insert(character: CharacterEntity) {
         favoriteDataSource.insert(character)
     }
 

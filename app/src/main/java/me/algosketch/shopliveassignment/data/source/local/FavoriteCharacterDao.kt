@@ -9,13 +9,13 @@ import androidx.room.Query
 interface FavoriteCharacterDao {
 
     @Query("SELECT * FROM favorite")
-    fun getAll(): List<FavoriteCharacter>
+    fun getAll(): List<CharacterEntity>
 
     @Insert
-    fun insert(character: FavoriteCharacter)
+    fun insert(character: CharacterEntity)
 
     @Delete
-    fun delete(character: FavoriteCharacter)
+    fun delete(character: CharacterEntity)
 
     @Query("DELETE FROM favorite WHERE characterId = :id")
     fun deleteByCharacterId(id: Int)

@@ -86,7 +86,7 @@ class SearchViewModel @Inject constructor(
     fun bookmark(character: CharacterModel) {
         viewModelScope.launch {
             if(character.favorite) favoriteCharacterRepository.delete(characterId = character.id)
-            else favoriteCharacterRepository.insert(character.toFavoriteCharacter())
+            else favoriteCharacterRepository.insert(character.toEntity())
             fetchFavoriteCharacters()
         }
     }

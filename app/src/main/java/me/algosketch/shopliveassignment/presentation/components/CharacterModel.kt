@@ -1,6 +1,6 @@
 package me.algosketch.shopliveassignment.presentation.components
 
-import me.algosketch.shopliveassignment.data.source.local.FavoriteCharacter
+import me.algosketch.shopliveassignment.data.source.local.CharacterEntity
 import me.algosketch.shopliveassignment.data.source.remote.Character
 
 data class CharacterModel(
@@ -10,8 +10,8 @@ data class CharacterModel(
     val thumbnailUrl: String,
     val favorite: Boolean = false,
 ) {
-    fun toFavoriteCharacter(): FavoriteCharacter {
-        return FavoriteCharacter(
+    fun toEntity(): CharacterEntity {
+        return CharacterEntity(
             characterId = id,
             name = name,
             description = description,
@@ -35,7 +35,7 @@ fun Character.toModel(
     )
 }
 
-fun FavoriteCharacter.toModel(): CharacterModel {
+fun CharacterEntity.toModel(): CharacterModel {
     return CharacterModel(
         id = characterId,
         name = name,
