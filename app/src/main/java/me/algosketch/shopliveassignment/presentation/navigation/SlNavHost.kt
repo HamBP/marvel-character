@@ -11,9 +11,7 @@ import me.algosketch.shopliveassignment.presentation.search.SearchScreen
 @Composable
 fun SlNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier
 ) {
-
     NavHost(
         navController = navController,
         startDestination = Search.route,
