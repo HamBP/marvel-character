@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.algosketch.shopliveassignment.data.repository.FavoriteCharacterRepository
 import me.algosketch.shopliveassignment.data.repository.MarvelCharacterRepository
@@ -34,8 +32,6 @@ class SearchViewModel @Inject constructor(
     private var searchJob: Job? = null
     var characters: List<CharacterEntity> = emptyList()
 
-    private val searchEventFlow = keyword.debounce(300L)
-
     init {
         fetchFavoriteCharacters()
         collectEvents()
@@ -50,7 +46,9 @@ class SearchViewModel @Inject constructor(
 
     private fun collectEvents() {
         viewModelScope.launch {
-            searchEventFlow.collect {
+            keyword.debounce(300L)
+                .map { it.trim() }
+                .collect {
                 characters = emptyList()
                 search()
             }
