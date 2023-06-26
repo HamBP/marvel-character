@@ -21,7 +21,7 @@ fun FavoriteScreen(viewModel: FavoriteViewModel = hiltViewModel()) {
         viewModel.fetchFavoriteCharacters()
     }
 
-    val uiState = viewModel.state.collectAsState()
+    val uiState = viewModel.uiState.collectAsState()
 
     when (uiState.value) {
         is FavoriteUiState.Loading -> LoadingProgress()

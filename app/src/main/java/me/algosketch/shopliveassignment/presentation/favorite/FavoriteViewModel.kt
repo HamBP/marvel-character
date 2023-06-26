@@ -26,16 +26,16 @@ sealed class FavoriteUiState {
 class FavoriteViewModel @Inject constructor(
     private val favoriteCharacterRepository: FavoriteCharacterRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow<FavoriteUiState>(FavoriteUiState.Loading)
-    val state = _state.asStateFlow()
+    private val _uiState = MutableStateFlow<FavoriteUiState>(FavoriteUiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     fun fetchFavoriteCharacters() {
-        _state.value = FavoriteUiState.Loading
+        _uiState.value = FavoriteUiState.Loading
 
         viewModelScope.launch {
             val res = favoriteCharacterRepository.getFavoriteCharacters().map { it.toModel() }
 
-            _state.value = when {
+            _uiState.value = when {
                 res.isNotEmpty() -> {
                     FavoriteUiState.Success(
                         characters = favoriteCharacterRepository.getFavoriteCharacters()

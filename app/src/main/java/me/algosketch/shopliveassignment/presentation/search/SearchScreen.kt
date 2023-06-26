@@ -8,17 +8,15 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import me.algosketch.shopliveassignment.presentation.components.CharacterCards
-import me.algosketch.shopliveassignment.presentation.components.LoadingProgress
 
 @Composable
 fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
     val keyword = viewModel.keyword.collectAsState()
-    val uiState = viewModel.state.collectAsState()
+    val uiState = viewModel.uiState.collectAsState()
 
     Column {
 

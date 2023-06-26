@@ -26,8 +26,8 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
     private val _keyword = MutableStateFlow("")
     val keyword = _keyword.asStateFlow()
-    private val _state = MutableStateFlow<SearchUiState>(SearchUiState.Success)
-    val state = _state.asStateFlow()
+    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Success)
+    val uiState = _uiState.asStateFlow()
     private var favorites: List<Int> = emptyList()
     private var searchJob: Job? = null
     var characters: List<CharacterModel> = emptyList()
@@ -61,11 +61,11 @@ class SearchViewModel @Inject constructor(
         if(keyword.value.length < 2) return
 
         searchJob = viewModelScope.launch {
-            _state.value = SearchUiState.Loading
+            _uiState.value = SearchUiState.Loading
 
             val res = searchRepository.getMarvelCharacters(keyword.value)
 
-            _state.value = when(res) {
+            _uiState.value = when(res) {
                 is ApiResponse.Success -> {
                     characters = characters + res.data?.data!!.results.map { character ->
                         character.toModel(favorite = favorites.contains(character.id))
@@ -80,7 +80,7 @@ class SearchViewModel @Inject constructor(
 
     private fun cancelPreviousSearch() {
         searchJob?.cancel()
-        _state.value = SearchUiState.Success
+        _uiState.value = SearchUiState.Success
     }
 
     fun bookmark(character: CharacterModel) {
@@ -96,9 +96,9 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun updateFavorite() {
-        if(state.value !is SearchUiState.Success) return
+        if(uiState.value !is SearchUiState.Success) return
 
-        _state.value = SearchUiState.Success
+        _uiState.value = SearchUiState.Success
         characters = characters.map {
             val originFavorite = it.favorite
             val curFavorite = favorites.contains(it.id)
