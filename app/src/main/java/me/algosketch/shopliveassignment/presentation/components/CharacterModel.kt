@@ -3,7 +3,7 @@ package me.algosketch.shopliveassignment.presentation.components
 import me.algosketch.shopliveassignment.data.source.local.FavoriteCharacter
 import me.algosketch.shopliveassignment.data.source.remote.Character
 
-data class CharacterEntity(
+data class CharacterModel(
     val id: Int,
     val name: String,
     val description: String,
@@ -20,13 +20,13 @@ data class CharacterEntity(
     }
 }
 
-fun Character.toEntity(
+fun Character.toModel(
     favorite: Boolean,
-): CharacterEntity {
+): CharacterModel {
     val imageSize = "standard_xlarge"
     val prefixUrl = thumbnail.path.substring(4)
 
-    return CharacterEntity(
+    return CharacterModel(
         id = id,
         name = name,
         description = description,
@@ -35,8 +35,8 @@ fun Character.toEntity(
     )
 }
 
-fun FavoriteCharacter.toEntity(): CharacterEntity {
-    return CharacterEntity(
+fun FavoriteCharacter.toModel(): CharacterModel {
+    return CharacterModel(
         id = characterId,
         name = name,
         description = description,

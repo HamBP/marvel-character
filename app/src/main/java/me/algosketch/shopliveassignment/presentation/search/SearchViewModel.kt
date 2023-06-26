@@ -9,8 +9,8 @@ import kotlinx.coroutines.launch
 import me.algosketch.shopliveassignment.data.repository.FavoriteCharacterRepository
 import me.algosketch.shopliveassignment.data.repository.MarvelCharacterRepository
 import me.algosketch.shopliveassignment.data.source.ApiResponse
-import me.algosketch.shopliveassignment.presentation.components.CharacterEntity
-import me.algosketch.shopliveassignment.presentation.components.toEntity
+import me.algosketch.shopliveassignment.presentation.components.CharacterModel
+import me.algosketch.shopliveassignment.presentation.components.toModel
 import javax.inject.Inject
 
 sealed class SearchUiState {
@@ -30,7 +30,7 @@ class SearchViewModel @Inject constructor(
     val state = _state.asStateFlow()
     private var favorites: List<Int> = emptyList()
     private var searchJob: Job? = null
-    var characters: List<CharacterEntity> = emptyList()
+    var characters: List<CharacterModel> = emptyList()
 
     init {
         fetchFavoriteCharacters()
@@ -68,7 +68,7 @@ class SearchViewModel @Inject constructor(
             _state.value = when(res) {
                 is ApiResponse.Success -> {
                     characters = characters + res.data?.data!!.results.map { character ->
-                        character.toEntity(favorite = favorites.contains(character.id))
+                        character.toModel(favorite = favorites.contains(character.id))
                     }
                     SearchUiState.Success
                 }
@@ -83,7 +83,7 @@ class SearchViewModel @Inject constructor(
         _state.value = SearchUiState.Success
     }
 
-    fun bookmark(character: CharacterEntity) {
+    fun bookmark(character: CharacterModel) {
         viewModelScope.launch {
             if(character.favorite) favoriteCharacterRepository.delete(characterId = character.id)
             else favoriteCharacterRepository.insert(character.toFavoriteCharacter())

@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.algosketch.shopliveassignment.data.repository.FavoriteCharacterRepository
-import me.algosketch.shopliveassignment.presentation.components.CharacterEntity
-import me.algosketch.shopliveassignment.presentation.components.toEntity
+import me.algosketch.shopliveassignment.presentation.components.CharacterModel
+import me.algosketch.shopliveassignment.presentation.components.toModel
 import javax.inject.Inject
 
 sealed class FavoriteUiState {
@@ -16,7 +16,7 @@ sealed class FavoriteUiState {
     object Empty : FavoriteUiState()
 
     data class Success(
-        val characters: List<CharacterEntity> = emptyList(),
+        val characters: List<CharacterModel> = emptyList(),
     ) : FavoriteUiState()
 
     data class Error(val message: String) : FavoriteUiState()
@@ -33,22 +33,22 @@ class FavoriteViewModel @Inject constructor(
         _state.value = FavoriteUiState.Loading
 
         viewModelScope.launch {
-            val res = favoriteCharacterRepository.getFavoriteCharacters().map { it.toEntity() }
+            val res = favoriteCharacterRepository.getFavoriteCharacters().map { it.toModel() }
 
             _state.value = when {
                 res.isNotEmpty() -> {
                     FavoriteUiState.Success(
                         characters = favoriteCharacterRepository.getFavoriteCharacters()
-                            .map { it.toEntity() })
+                            .map { it.toModel() })
                 }
                 else -> FavoriteUiState.Empty
             }
         }
     }
 
-    fun unbookmark(characterEntity: CharacterEntity) {
+    fun unbookmark(characterModel: CharacterModel) {
         viewModelScope.launch {
-            favoriteCharacterRepository.delete(characterEntity.id)
+            favoriteCharacterRepository.delete(characterModel.id)
             fetchFavoriteCharacters()
         }
     }

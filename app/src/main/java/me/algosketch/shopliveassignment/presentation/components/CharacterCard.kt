@@ -19,8 +19,8 @@ import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun CharacterCards(
-    characters: List<CharacterEntity>,
-    bookmark: (CharacterEntity) -> Unit,
+    characters: List<CharacterModel>,
+    bookmark: (CharacterModel) -> Unit,
     onBottomReached: () -> Unit = {},
     isLoading: Boolean = false,
 ) {
@@ -48,7 +48,7 @@ fun CharacterCards(
 }
 
 @Composable
-fun CharacterCard(character: CharacterEntity, onClick: (CharacterEntity) -> Unit) {
+fun CharacterCard(character: CharacterModel, onClick: (CharacterModel) -> Unit) {
     Card(
         modifier = Modifier
             .padding(bottom = 24.dp)
