@@ -9,10 +9,10 @@ class FavoriteCharacterLocalDataSource @Inject constructor(
     private val dao: FavoriteCharacterDao,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) {
-    suspend fun findAll(order: String = "DESC"): List<CharacterEntity> = withContext(ioDispatcher) {
+    suspend fun findAll(order: SortType = SortType.NEWEST): List<CharacterEntity> = withContext(ioDispatcher) {
 
         dao.getAll().sortedBy {
-            if(order.uppercase() == "ASC") it.id else -it.id
+            if(order == SortType.OLDEST) it.id else -it.id
         }
     }
 
@@ -33,4 +33,9 @@ class FavoriteCharacterLocalDataSource @Inject constructor(
 
         dao.delete(target)
     }
+}
+
+enum class SortType {
+    OLDEST,
+    NEWEST,
 }

@@ -2,6 +2,7 @@ package me.algosketch.shopliveassignment.data.repository
 
 import me.algosketch.shopliveassignment.data.source.local.CharacterEntity
 import me.algosketch.shopliveassignment.data.source.local.FavoriteCharacterLocalDataSource
+import me.algosketch.shopliveassignment.data.source.local.SortType
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,7 +14,7 @@ class FavoriteCharacterRepository @Inject constructor(
      * @param order 정렬 기준 DESC, ASC
      */
     suspend fun getFavoriteCharacters(
-        order: String = "DESC",
+        order: SortType = SortType.NEWEST,
     ): List<CharacterEntity> =
         favoriteDataSource.findAll(order)
 
