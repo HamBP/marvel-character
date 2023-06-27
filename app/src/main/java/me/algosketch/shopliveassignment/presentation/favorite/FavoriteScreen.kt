@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -21,13 +22,13 @@ fun FavoriteScreen(viewModel: FavoriteViewModel = hiltViewModel()) {
         viewModel.fetchFavoriteCharacters()
     }
 
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    when (uiState.value) {
+    when (uiState) {
         is FavoriteUiState.Loading -> LoadingProgress()
         is FavoriteUiState.Success -> CharacterCards(
             bookmark = { character -> viewModel.unbookmark(character) },
-            characters = (uiState.value as FavoriteUiState.Success).characters,
+            characters = (uiState as FavoriteUiState.Success).characters,
         )
         is FavoriteUiState.Empty -> EmptyContent()
         is FavoriteUiState.Error -> {

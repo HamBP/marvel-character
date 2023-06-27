@@ -9,18 +9,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import me.algosketch.shopliveassignment.presentation.components.CharacterCards
 
 @Composable
 fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
-    val keyword = viewModel.keyword.collectAsState()
-    val uiState = viewModel.uiState.collectAsState()
+    val keyword by viewModel.keyword.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     Column {
 
-        OutlinedTextField(value = keyword.value,
+        OutlinedTextField(value = keyword,
             onValueChange = { viewModel.updateKeyword(it) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("마블 영웅 이름을 입력하시오.") },
@@ -30,12 +31,12 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
                 )
             })
 
-        when (uiState.value) {
+        when (uiState) {
             is SearchUiState.Loading, SearchUiState.Success -> CharacterCards(
                 bookmark = { character -> viewModel.bookmark(character) },
                 characters = viewModel.characters,
                 onBottomReached = { viewModel.search() },
-                isLoading = uiState.value is SearchUiState.Loading,
+                isLoading = uiState is SearchUiState.Loading,
             )
             is SearchUiState.Error -> {
                 Text("Error")
