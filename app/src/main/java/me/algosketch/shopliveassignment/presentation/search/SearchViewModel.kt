@@ -13,7 +13,7 @@ import me.algosketch.shopliveassignment.data.repository.FavoriteCharacterReposit
 import me.algosketch.shopliveassignment.data.repository.MarvelCharacterRepository
 import me.algosketch.shopliveassignment.data.source.ApiResponse
 import me.algosketch.shopliveassignment.presentation.components.CharacterModel
-import me.algosketch.shopliveassignment.presentation.components.toModel
+import me.algosketch.shopliveassignment.presentation.components.toModels
 import javax.inject.Inject
 
 sealed class SearchUiState {
@@ -32,7 +32,7 @@ class SearchViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Success)
     val uiState = _uiState.asStateFlow()
-    private var favorites: List<Int> = emptyList()
+    private var favoriteIds: List<Int> = emptyList()
     var characters: List<CharacterModel> = emptyList()
 
     private var searchJob: Job? = null
@@ -44,7 +44,7 @@ class SearchViewModel @Inject constructor(
 
     private fun fetchFavoriteCharacters() {
         viewModelScope.launch {
-            favorites = favoriteCharacterRepository.getFavoriteCharacters().map { it.characterId }
+            favoriteIds = favoriteCharacterRepository.getFavoriteCharacters().map { it.characterId }
             updateFavorite()
         }
     }
@@ -72,9 +72,7 @@ class SearchViewModel @Inject constructor(
 
             _uiState.value = when (res) {
                 is ApiResponse.Success -> {
-                    characters = characters + res.data?.data!!.results.map { character ->
-                        character.toModel(favorite = favorites.contains(character.id))
-                    }
+                    characters = characters + res.toModels(favoriteIds)
                     SearchUiState.Success
                 }
                 is ApiResponse.Error -> SearchUiState.Error(res.message)
@@ -106,7 +104,7 @@ class SearchViewModel @Inject constructor(
         _uiState.value = SearchUiState.Success
         characters = characters.map {
             val originFavorite = it.favorite
-            val curFavorite = favorites.contains(it.id)
+            val curFavorite = favoriteIds.contains(it.id)
 
             if (originFavorite == curFavorite) it
             else it.copy(favorite = curFavorite)

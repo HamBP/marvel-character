@@ -1,7 +1,9 @@
 package me.algosketch.shopliveassignment.presentation.components
 
+import me.algosketch.shopliveassignment.data.source.ApiResponse
 import me.algosketch.shopliveassignment.data.source.local.CharacterEntity
 import me.algosketch.shopliveassignment.data.source.remote.Character
+import me.algosketch.shopliveassignment.data.source.remote.CharacterDataWrapper
 
 data class CharacterModel(
     val id: Int,
@@ -17,6 +19,14 @@ data class CharacterModel(
             description = description,
             thumbnailUrl = thumbnailUrl,
         )
+    }
+}
+
+fun ApiResponse<CharacterDataWrapper>.toModels(favoriteIds: List<Int>): List<CharacterModel> {
+    val data = this.data?.data ?: return emptyList()
+
+    return data.results.map { character ->
+        character.toModel(favorite = favoriteIds.contains(character.id))
     }
 }
 
