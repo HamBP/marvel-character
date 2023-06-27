@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.algosketch.shopliveassignment.data.repository.FavoriteCharacterRepository
 import me.algosketch.shopliveassignment.data.repository.MarvelCharacterRepository
@@ -26,11 +29,13 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
     private val _keyword = MutableStateFlow("")
     val keyword = _keyword.asStateFlow()
+
     private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Success)
     val uiState = _uiState.asStateFlow()
     private var favorites: List<Int> = emptyList()
-    private var searchJob: Job? = null
     var characters: List<CharacterModel> = emptyList()
+
+    private var searchJob: Job? = null
 
     init {
         fetchFavoriteCharacters()
@@ -49,23 +54,23 @@ class SearchViewModel @Inject constructor(
             keyword.debounce(300L)
                 .map { it.trim() }
                 .collect {
-                characters = emptyList()
-                search()
-            }
+                    characters = emptyList()
+                    search()
+                }
         }
     }
 
     fun search() {
         cancelPreviousSearch()
 
-        if(keyword.value.length < 2) return
+        if (keyword.value.length < 2) return
 
         searchJob = viewModelScope.launch {
             _uiState.value = SearchUiState.Loading
 
             val res = searchRepository.getMarvelCharacters(keyword.value)
 
-            _uiState.value = when(res) {
+            _uiState.value = when (res) {
                 is ApiResponse.Success -> {
                     characters = characters + res.data?.data!!.results.map { character ->
                         character.toModel(favorite = favorites.contains(character.id))
@@ -85,7 +90,7 @@ class SearchViewModel @Inject constructor(
 
     fun bookmark(character: CharacterModel) {
         viewModelScope.launch {
-            if(character.favorite) favoriteCharacterRepository.delete(characterId = character.id)
+            if (character.favorite) favoriteCharacterRepository.delete(characterId = character.id)
             else favoriteCharacterRepository.insert(character.toEntity())
             fetchFavoriteCharacters()
         }
@@ -96,7 +101,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun updateFavorite() {
-        if(uiState.value !is SearchUiState.Success) return
+        if (uiState.value !is SearchUiState.Success) return
 
         _uiState.value = SearchUiState.Success
         characters = characters.map {
