@@ -33,7 +33,8 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Success)
     val uiState = _uiState.asStateFlow()
     private var favoriteIds: List<Int> = emptyList()
-    var characters: List<CharacterModel> = emptyList()
+    private val _characters = MutableStateFlow<List<CharacterModel>>(emptyList())
+    val characters = _characters.asStateFlow()
 
     private var searchJob: Job? = null
 
@@ -54,7 +55,7 @@ class SearchViewModel @Inject constructor(
             keyword.debounce(300L)
                 .map { it.trim() }
                 .collect {
-                    characters = emptyList()
+                    _characters.value = emptyList()
                     search()
                 }
         }
@@ -72,7 +73,7 @@ class SearchViewModel @Inject constructor(
 
             _uiState.value = when (res) {
                 is ApiResponse.Success -> {
-                    characters = characters + res.toModels(favoriteIds)
+                    _characters.value += res.toModels(favoriteIds)
                     SearchUiState.Success
                 }
                 is ApiResponse.Error -> SearchUiState.Error(res.message)
@@ -101,8 +102,9 @@ class SearchViewModel @Inject constructor(
     private fun updateFavorite() {
         if (uiState.value !is SearchUiState.Success) return
 
+        _uiState.value = SearchUiState.Loading
         _uiState.value = SearchUiState.Success
-        characters = characters.map {
+        _characters.value = characters.value.map {
             val originFavorite = it.favorite
             val curFavorite = favoriteIds.contains(it.id)
 

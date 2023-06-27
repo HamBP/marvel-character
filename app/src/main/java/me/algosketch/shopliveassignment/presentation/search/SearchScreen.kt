@@ -18,6 +18,7 @@ import me.algosketch.shopliveassignment.presentation.components.CharacterCards
 fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
     val keyword by viewModel.keyword.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
+    val characters by viewModel.characters.collectAsState()
 
     Column {
 
@@ -34,7 +35,7 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
         when (uiState) {
             is SearchUiState.Loading, SearchUiState.Success -> CharacterCards(
                 bookmark = { character -> viewModel.bookmark(character) },
-                characters = viewModel.characters,
+                characters = characters,
                 onBottomReached = { viewModel.search() },
                 isLoading = uiState is SearchUiState.Loading,
             )
